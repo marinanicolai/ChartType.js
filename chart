@@ -1,0 +1,40 @@
+let tourTimeLines = [
+    { time: "22:00", label: "Shift One Starts" },
+    { time: "06:00", label: "Shift Two Starts" },
+    { time: "14:00", label: "Shift Three Starts" }    
+];
+
+let tourTimeLine = {
+    id: 'tourTimeLine',
+    afterDatasetsDraw(chart) {
+        const { ctx, scales: { x, y } } = chart;
+        ctx.save();
+
+        // Loop through each time in tourTimeLines
+        tourTimeLines.forEach(tour => {
+            // Convert the time string to a Date object
+            // Assuming the date is for the current day
+            let date = new Date();
+            let [hours, minutes] = tour.time.split(':');
+            date.setHours(hours, minutes, 0, 0);
+
+            // Get the pixel value for the time
+            const xPos = x.getPixelForValue(date);
+
+            console.log(tour.label);
+            console.log(xPos);
+
+            // Draw the line
+            if (!isNaN(xPos)) {
+                ctx.beginPath();
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.moveTo(xPos, y.top);
+                ctx.lineTo(xPos, y.bottom); // Draw to the bottom of the chart
+                ctx.stroke();
+            }
+        });
+
+        ctx.restore();
+    }
+}
